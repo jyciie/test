@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.f14
+{
+  font-family: Tahoma;
+  font-size: 13.5px;
+}
