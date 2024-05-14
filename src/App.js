@@ -1,8 +1,18 @@
 import logo from './logo.svg';
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormInputField from './components/FormInputField';
+import {
+  getUser,
+  getUserImages,
+  getUserImageByID,
+  getUserByIDUser,
+  createUser,
+  updateUser,
+  deleteUser,
+} from './api/userApi';
+
 // const myTable = [];
 
 const fileDataToUri = (file) =>
@@ -20,8 +30,14 @@ function App() {
   // const [BDate, setBDate] = useState();
   // const [Address, setAddress] = useState();
   // const [ContactNumber, setContactNumber] = useState();
-  const [myTable, setMyTable] = useState([]);
+  const [myTable, setMyTable] = useState([]); //manage state application
   const [myImg, setmyImg] = useState();
+  useEffect(() => {
+    getUser().then((result) => {
+      setMyTable(result.data);
+      console.log(result);
+    });
+  }, []); //rerender app
 
   const {
     register: myRegister,
@@ -57,6 +73,7 @@ function App() {
       // },
       formData,
     ]);
+    createUser(formData);
 
     //myTable.push();
     // console.log(myTable);
