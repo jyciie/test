@@ -9,6 +9,7 @@ const FormInputField = ({
   errors,
   errorclass,
   fieldtype = 'text',
+  value = null,
 }) => {
   return (
     <div className='text-left my-1'>
@@ -17,6 +18,7 @@ const FormInputField = ({
         type={fieldtype}
         className='rounded-xs border uppercase w-full my-1'
         {...register(name, validation)}
+        value={value}
       />
       {errors[name] && errors[name].type === 'required' && (
         <span className={errorclass}>This is required</span>

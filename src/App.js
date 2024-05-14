@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Buffer } from 'buffer';
 import FormInputField from './components/FormInputField';
-import { getUser, createUser } from './api/userApi';
+import { getUser, createUser, updateUser } from './api/userApi';
 import moment from 'moment';
 
 function App() {
   const [myTable, setMyTable] = useState([]);
+  const [userId, setUserId] = useState(null);
   useEffect(() => {
     getUser().then((result) => {
       setMyTable(result.data);
@@ -19,7 +20,24 @@ function App() {
     register: myRegister,
     handleSubmit,
     formState: { errors },
+    setValue,
+    reset,
   } = useForm();
+
+  const handleSetSelected = (data) => {
+    setUserId(data.userID);
+    setValue('FName', data.FName);
+    setValue('MName', data.MName);
+    setValue('LName', data.LName);
+    setValue('BDate', moment(data.BDate).format('YYYY-MM-DD'));
+    setValue('ContactNumber', data.ContactNumber);
+    setValue('Address', data.Address);
+  };
+
+  const handleCancelSelection = () => {
+    setUserId(null);
+    reset();
+  };
 
   function saveDetails(data) {
     const formData = new FormData();
@@ -31,7 +49,11 @@ function App() {
     formData.append('ContactNumber', data.ContactNumber);
     formData.append('Address', data.Address);
 
-    createUser(formData);
+    if (userId) {
+      updateUser(userId, formData);
+    } else {
+      createUser(formData);
+    }
   }
 
   return (
@@ -99,32 +121,44 @@ function App() {
             register={myRegister}
             name={'ImageBlob'}
             fieldlabel={'Profile Picture'}
-            validation={{ required: true }}
+            validation={{ required: false }}
             errors={errors}
             errorclass='text-redx'
             fieldtype='file'
           />
 
-          <button
-            className='rounded-md border bg-zinc-900 text-white h-[35px] px-2'
-            type='submit'
-          >
-            Save Details
-          </button>
+          <div>
+            {userId && (
+              <button
+                className='rounded-md border bg-zinc-900 text-white h-[35px] px-2'
+                onClick={() => handleCancelSelection()}
+              >
+                Cancel
+              </button>
+            )}
+            <button
+              className='rounded-md border bg-zinc-900 text-white h-[35px] px-2'
+              type='submit'
+            >
+              Save Details
+            </button>
+          </div>
         </div>
       </form>
       <div>
         <div className='grid grid-cols-4 gap-4'>
           {myTable.map((element, indx) => {
             let b64;
-            if (element.UserImage.ImageBlob) {
-              b64 = Buffer.from(element.UserImage.ImageBlob).toString('base64');
+            if (element.UserImage?.ImageBlob) {
+              b64 = Buffer.from(element.UserImage?.ImageBlob).toString(
+                'base64'
+              );
             }
             return (
               <div
                 className='border rounded-md p-10 flex flex-col items-center'
                 key={indx}
-                onClick={() => setSelected(element)}
+                onClick={() => handleSetSelected(element)}
               >
                 <img
                   className='border-2 w-[150px] h-[150px] object-contain rounded-full'

@@ -55,7 +55,10 @@ const updateUser = async (userID, formData) => {
   try {
     const response = await axios.put(
       backHostURL + '/updateUser/' + userID,
-      formData
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
     );
     return response;
   } catch (error) {
