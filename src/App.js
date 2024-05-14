@@ -1,6 +1,7 @@
 import './App.css';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { Buffer } from 'buffer';
 import FormInputField from './components/FormInputField';
 import { getUser, createUser } from './api/userApi';
 
@@ -19,8 +20,16 @@ function App() {
     formState: { errors },
   } = useForm();
 
-  function saveDetails(formData) {
-    console.log(formData);
+  function saveDetails(data) {
+    const formData = new FormData();
+    formData.append('file', data.ImageBlob[0]);
+    formData.append('FName', data.FName);
+    formData.append('MName', data.MName);
+    formData.append('LName', data.LName);
+    formData.append('BDate', data.BDate);
+    formData.append('ContactNumber', data.ContactNumber);
+    formData.append('Address', data.Address);
+
     createUser(formData);
   }
 
@@ -106,11 +115,15 @@ function App() {
       <div>
         <div className='grid grid-cols-4 gap-4'>
           {myTable.map((element, indx) => {
+            let b64;
+            if (element.UserImage.ImageBlob) {
+              b64 = Buffer.from(element.UserImage.ImageBlob).toString('base64');
+            }
             return (
               <div className='border rounded-md p-10' key={indx}>
                 <img
                   className='border h-[150px] w-full rounded-full'
-                  src={element.myImg}
+                  src={`data:image/webp;base64,${b64}`}
                   alt='Profile'
                 ></img>
                 <div>
