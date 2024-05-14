@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Buffer } from 'buffer';
 import FormInputField from './components/FormInputField';
 import { getUser, createUser } from './api/userApi';
+import moment from 'moment';
 
 function App() {
   const [myTable, setMyTable] = useState([]);
@@ -34,9 +35,9 @@ function App() {
   }
 
   return (
-    <div className='App flex justify-center flex-col items-center'>
+    <div className='App flex justify-center flex-col items-center py-6 space-y-4'>
       <form onSubmit={handleSubmit(saveDetails)}>
-        <div className=' p-10 border my-5  '>
+        <div className='p-10 border'>
           <div className='w-full text-left font-bold'>Form Details</div>
           <p className='text-4xl text-redx' id='changeText'></p>
           <FormInputField
@@ -120,12 +121,16 @@ function App() {
               b64 = Buffer.from(element.UserImage.ImageBlob).toString('base64');
             }
             return (
-              <div className='border rounded-md p-10' key={indx}>
+              <div
+                className='border rounded-md p-10 flex flex-col items-center'
+                key={indx}
+                onClick={() => setSelected(element)}
+              >
                 <img
-                  className='border h-[150px] w-full rounded-full'
+                  className='border-2 w-[150px] h-[150px] object-contain rounded-full'
                   src={`data:image/webp;base64,${b64}`}
                   alt='Profile'
-                ></img>
+                />
                 <div>
                   <div className='text-left my-1'>
                     <label className='font-bold'>Fullname : </label>
@@ -133,7 +138,7 @@ function App() {
                   </div>
                   <div className='text-left my-1'>
                     <label className='font-bold'>Birth Date : </label>
-                    {element.BDate}
+                    {moment(element.BDate).format('MMMM DD, YYYY')}
                   </div>
                   <div className='text-left my-1'>
                     <label className='font-bold'>Contact Number : </label>
